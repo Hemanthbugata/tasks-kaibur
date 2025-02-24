@@ -1,0 +1,30 @@
+# mongo-service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+spec:
+  selector:
+    app: mongo
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+  clusterIP: None  # Headless service, to be used for communication with the app
+
+---
+# app-service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: kaibur-tasks
+spec:
+  selector:
+    app: kaibur-tasks
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: LoadBalancer  # You can also use NodePort or ClusterIP depending on your Kubernetes setup

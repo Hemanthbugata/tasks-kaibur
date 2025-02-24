@@ -1,0 +1,6 @@
+com\example\backend\model\Task.class
+com\example\backend\model\TaskExecution.class
+com\example\backend\controller\TaskController.class
+com\example\backend\service\TaskService.class
+com\example\backend\BackendApplication.class
+com\example\backend\repository\TaskRepository.class

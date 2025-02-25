@@ -60,7 +60,7 @@ pipeline {
                     withDockerRegistry(credentialsId: 'docker', url: 'https://index.docker.io') {
                         sh '''
                             echo "Building Docker Image..."
-                            docker build -t springboot-backend -f Dockerfile .
+                            docker build -t springboot-backend -f backend/Dockerfile .
             
                             echo "Tagging Docker Image..."
                             docker tag springboot-backend hemanth0102/springboot-backend:latest

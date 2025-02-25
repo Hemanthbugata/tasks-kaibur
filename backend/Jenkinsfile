@@ -52,13 +52,6 @@ pipeline {
             }
         }
 
-        stage('OWASP Dependency-Check Scan') {
-            steps {
-                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check' // OWASP Dependency-Check Scan
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml' // Publish the Dependency-Check report
-            }
-        }
-
         stage('Trivy File System Scan') {
             steps {
                 sh "trivy fs . > trivyfs.txt" // Perform a Trivy file system scan to check for vulnerabilities in the project

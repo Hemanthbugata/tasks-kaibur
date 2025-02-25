@@ -27,10 +27,11 @@ pipeline {
 
         stage('Maven Build') {
             steps {
-                sh 'mvn clean install -DskipTests'  // Build the Java project
-            }
+                dir('backend') { // Change 'backend' to the correct subdirectory if needed
+                    sh 'mvn clean install -DskipTests'
+                }
+             }
         }
-
        stage("Sonarqube Analysis ") {
             steps {
                 withSonarQubeEnv('SonarQube') {

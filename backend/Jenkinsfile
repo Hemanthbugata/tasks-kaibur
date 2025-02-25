@@ -74,7 +74,7 @@ pipeline {
 
         stage('Trivy Image Scan') {
             steps {
-                sh "trivy image  hemanth0102/springboot-backend:latest trivyimage.txt" // Scan the built Docker image using Trivy for vulnerabilities
+                 sh "trivy image --format table --output trivyimage.txt hemanth0102/springboot-backend:latest"
             }
         }
     }

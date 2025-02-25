@@ -22,7 +22,7 @@ pipeline {
 
         stage('Checkout from Git') {
             steps {
-                git credentialsId: 'GIT', branch: 'main', url: 'https://github.com/Hemanthbugata/Kaibur-tasks.git'
+                git branch: 'main', url: 'https://github.com/Hemanthbugata/Kaibur-tasks.git'
             }
         }
 

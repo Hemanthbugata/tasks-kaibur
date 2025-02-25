@@ -25,15 +25,11 @@ pipeline {
             }
         }
 
-        stage("SonarQube Analysis") {
+       stage("Sonarqube Analysis ") {
             steps {
-                withSonarQubeEnv(SONARQUBE_SERVER) {
-                    sh ''' 
-                    $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=KaiburTasks-CICD \
-                    -Dsonar.projectKey=KaiburTasks-CICD \
-                    -Dsonar.sources=. \
-                    -Dsonar.java.binaries=target/classes
-                    '''
+                withSonarQubeEnv('sonar-server') {
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=springboot-backend \
+                    -Dsonar.projectKey=springboot-backend '''
                 }
             }
         }

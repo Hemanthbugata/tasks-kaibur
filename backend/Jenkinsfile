@@ -29,6 +29,7 @@ pipeline {
             steps {
                 dir('backend') { // Change 'backend' to the correct subdirectory if needed
                     sh 'mvn clean install -DskipTests'
+                    sh 'mvn clean compile'
                 }
              }
         }

@@ -3,12 +3,14 @@ import { Input, Button, notification } from 'antd';
 import { executeTask } from '../api/taskApi';
 
 const CommandExecution: React.FC = () => {
+  const [taskId, setTaskId] = useState(''); // Assuming taskId is entered by the user
   const [command, setCommand] = useState('');
   const [executionResult, setExecutionResult] = useState('');
 
   const handleExecuteCommand = async () => {
     try {
-      const result = await executeTask(command);
+      const result = await executeTask(taskId, command); // Passing both taskId and command
+
       if (result) {
         setExecutionResult(result.output);
         notification.success({
@@ -19,23 +21,22 @@ const CommandExecution: React.FC = () => {
           message: 'Command Execution Failed',
         });
       }
-    } catch (error: unknown) {
-      // Type assertion to handle the 'unknown' type error
-      if (error instanceof Error) {
-        notification.error({
-          message: 'Error Executing Command',
-        });
-      } else {
-        notification.error({
-          message: 'Unknown error',
-          description: 'An unknown error occurred',
-        });
-      }
+    } catch (error: any) {  // Explicitly define the error type as 'any'
+      notification.error({
+        message: 'Error Executing Command',
+        description: error.message,
+      });
     }
   };
 
   return (
     <div>
+      <Input
+        value={taskId}
+        onChange={(e) => setTaskId(e.target.value)}
+        placeholder="Enter Task ID"
+        style={{ marginBottom: '10px' }}
+      />
       <Input.TextArea
         value={command}
         onChange={(e) => setCommand(e.target.value)}

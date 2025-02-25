@@ -1,3 +1,4 @@
+// components/TaskList.tsx
 import React, { useState, useEffect } from 'react';
 import { Table, Button, notification } from 'antd';
 import { Task } from '../types/TaskTypes';
@@ -23,18 +24,11 @@ const TaskList: React.FC = () => {
           message: 'Error Deleting Task',
         });
       }
-    } catch (error: unknown) {
-      // Type assertion to handle the 'unknown' type error
-      if (error instanceof Error) {
-        notification.error({
-          message: 'Error Deleting Task',
-        });
-      } else {
-        notification.error({
-          message: 'Unknown error',
-          description: 'An unknown error occurred',
-        });
-      }
+    } catch (error: any) {
+      notification.error({
+        message: 'Error Deleting Task',
+        description: error.message,
+      });
     }
   };
 
@@ -46,9 +40,9 @@ const TaskList: React.FC = () => {
         { title: 'Task Name', dataIndex: 'name', key: 'name' },
         { title: 'Command', dataIndex: 'command', key: 'command' },
         {
-          title: 'Action',
+          title: 'Actions',
           key: 'action',
-          render: (_, record) => (
+          render: (_, record: Task) => (
             <Button onClick={() => handleDelete(record.id)} danger>
               Delete
             </Button>

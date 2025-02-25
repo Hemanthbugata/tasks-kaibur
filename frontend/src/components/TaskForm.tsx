@@ -1,17 +1,21 @@
+// src/components/TaskForm.tsx
 import React, { useState } from 'react';
 import { Form, Input, Button, notification } from 'antd';
-import { Task } from '../types/TaskTypes';
+import { Task } from '../types/TaskTypes'; // Correct import for Task type
 import { createTask } from '../api/taskApi';
 
 const TaskForm: React.FC = () => {
   const [taskName, setTaskName] = useState('');
   const [taskCommand, setTaskCommand] = useState('');
+  const [taskOwner, setTaskOwner] = useState('');
 
   const handleCreateTask = async () => {
     const taskData: Task = {
-      id: 'temp-id', // Generate the ID server-side, don't use it client-side
+      id: 'temp_id',
       name: taskName,
       command: taskCommand,
+      owner: 'John Doe', // Include the owner field
+      taskExecutions: [], // Initially an empty array
     };
 
     try {
@@ -26,18 +30,11 @@ const TaskForm: React.FC = () => {
           message: 'Error Creating Task',
         });
       }
-    } catch (error: unknown) {
-      // Type assertion to handle the 'unknown' type error
-      if (error instanceof Error) {
-        notification.error({
-          message: 'Error Creating Task',
-        });
-      } else {
-        notification.error({
-          message: 'Unknown error',
-          description: 'An unknown error occurred',
-        });
-      }
+    } catch (error: any) {  // Explicitly define the error type as 'any'
+      notification.error({
+        message: 'Error Creating Task',
+        description: error.message,
+      });
     }
   };
 
@@ -56,6 +53,14 @@ const TaskForm: React.FC = () => {
           value={taskCommand}
           onChange={(e) => setTaskCommand(e.target.value)}
           placeholder="Enter Command"
+        />
+      </Form.Item>
+
+      <Form.Item label="Task Owner" required>
+        <Input
+          value={taskOwner}
+          onChange={(e) => setTaskOwner(e.target.value)}
+          placeholder="Enter Owner"
         />
       </Form.Item>
 

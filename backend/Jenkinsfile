@@ -55,13 +55,19 @@ pipeline {
             }
         }
 
-        stage('Docker Build & Push') {
-            steps {
+         stage('Docker Build & Push') {
+                steps {
                     withDockerRegistry(credentialsId: 'docker', url: 'https://index.docker.io') {
-                        sh 'docker login -u hemanth0102 -p (password)'
-                        sh "docker build -t springboot-backend ." // Build Docker image
-                        sh "docker tag springboot-backend hemanth0102/springboot-backend:latest"
-                        sh "docker push hemanth0102/springboot-backend:latest" // Push image to Docker Hub
+                        sh '''
+                            echo "Building Docker Image..."
+                            docker build -t springboot-backend .
+            
+                            echo "Tagging Docker Image..."
+                            docker tag springboot-backend hemanth0102/springboot-backend:latest
+            
+                            echo "Pushing Docker Image..."
+                            docker push hemanth0102/springboot-backend:latest
+                        '''
                 }
             }
         }

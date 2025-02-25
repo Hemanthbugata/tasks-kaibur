@@ -36,9 +36,10 @@ pipeline {
        stage("Sonarqube Analysis ") {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=springboot-backend \
-                    -Dsonar.projectKey=springboot-backend
-                     -Dsonar.java.binaries=target/classes
+                    sh ''' 
+                    $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=springboot-backend \
+                    -Dsonar.projectKey=springboot-backend \
+                    -Dsonar.java.binaries=target/classes
                     '''
                 }
             }

@@ -57,7 +57,7 @@ pipeline {
 
          stage('Docker Build & Push') {
                 steps {
-                    withDockerRegistry(credentialsId: 'docker', url: 'https://hub.docker.com/') {
+                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
                         sh '''
                             echo "Building Docker Image..."
                             docker build -t springboot-backend -f backend/Dockerfile .
@@ -74,7 +74,7 @@ pipeline {
 
         stage('Trivy Image Scan') {
             steps {
-                sh "trivy image $REGISTRY/$IMAGE_NAME:$IMAGE_TAG > trivyimage.txt" // Scan the built Docker image using Trivy for vulnerabilities
+                sh "trivy image  hemanth0102/springboot-backend:latest trivyimage.txt" // Scan the built Docker image using Trivy for vulnerabilities
             }
         }
     }

@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        jdk 'jdk17' // Ensure JDK 17 is installed in Jenkins
+        jdk 'jdk21' // Ensure JDK 17 is installed in Jenkins
         maven 'Maven 3' // Add Maven tool (name must match Jenkins tool config)
     }
     environment {

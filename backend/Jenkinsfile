@@ -6,9 +6,6 @@ pipeline {
     }
     environment {
         SCANNER_HOME = tool 'sonar-scanner' // SonarQube scanner tool path
-        IMAGE_NAME = 'backend-spring' // Docker image name
-        REGISTRY = 'docker.io' // Docker Hub registry
-        IMAGE_TAG = 'latest' // Docker image tag
         SONARQUBE_SERVER = 'SonarQube' // SonarQube server name configured in Jenkins
     }
 
@@ -60,12 +57,11 @@ pipeline {
 
         stage('Docker Build & Push') {
             steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'DockerHub-Credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                        sh "docker login -u $DOCKER_USER -p $DOCKER_PASS"
-                        sh "docker build -t $REGISTRY/$IMAGE_NAME:$IMAGE_TAG ." // Build Docker image
-                        sh "docker push $REGISTRY/$IMAGE_NAME:$IMAGE_TAG" // Push image to Docker Hub
-                    }
+                    withDockerRegistry(credentialsId: 'docker', url: 'https://index.docker.io') {
+                        sh 'docker login -u hemanth0102 -p (password)'
+                        sh "docker build -t springboot-backend ." // Build Docker image
+                        sh "docker tag springboot-backend hemanth0102/springboot-backend:latest"
+                        sh "docker push hemanth0102/springboot-backend:latest" // Push image to Docker Hub
                 }
             }
         }

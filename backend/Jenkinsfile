@@ -1,0 +1,96 @@
+pipeline {
+    agent any
+    tools {
+        jdk 'jdk17' // Specify the JDK version (ensure JDK 17 is installed in Jenkins)
+        nodejs 'node16' // Specify the Node.js version (ensure Node.js 16 is installed in Jenkins)
+    }
+    environment {
+        SCANNER_HOME = tool 'sonar-scanner' // SonarQube scanner tool path
+        IMAGE_NAME = 'backend-springboot' // Docker image name
+        REGISTRY = 'docker.io' // Docker Hub registry
+        IMAGE_TAG = 'latest' // Docker image tag
+        DOCKER_USERNAME = 'hemanth0102' // Docker username
+        DOCKER_PASSWORD = 'Hemanth@0102' // Docker password
+        SONARQUBE_SERVER = 'SonarQube' // SonarQube server name configured in Jenkins
+    }
+
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs() // Clean the workspace before starting the build
+            }
+        }
+
+        stage('Checkout from Git') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Hemanthbugata/Kaibur-tasks.git' // Checkout from GitHub repository
+            }
+        }
+
+        stage("SonarQube Analysis") {
+            steps {
+                withSonarQubeEnv(SONARQUBE_SERVER) {
+                    sh ''' 
+                    $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=KaiburTasks-CICD \
+                    -Dsonar.projectKey=KaiburTasks-CICD \
+                    -Dsonar.sources=src
+                    '''
+                }
+            }
+        }
+
+        stage("Quality Gate") {
+            steps {
+                script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token' // Wait for the SonarQube quality gate status
+                }
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh "mvn clean install -DskipTests" // Install dependencies for backend Spring Boot application
+            }
+        }
+
+        stage('OWASP Dependency-Check Scan') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check' // OWASP Dependency-Check Scan
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml' // Publish the Dependency-Check report
+            }
+        }
+
+        stage('Trivy File System Scan') {
+            steps {
+                sh "trivy fs . > trivyfs.txt" // Perform a Trivy file system scan to check for vulnerabilities in the project
+            }
+        }
+
+        stage('Docker Build & Push') {
+            steps {
+                script {
+                    // Docker login using credentials stored in Jenkins
+                    sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
+                    sh "docker build -t $REGISTRY/$IMAGE_NAME:$IMAGE_TAG ." // Build Docker image for the backend Spring Boot app
+                    sh "docker tag $REGISTRY/$IMAGE_NAME:$IMAGE_TAG $REGISTRY/$IMAGE_NAME:$IMAGE_TAG" // Tag the image
+                    sh "docker push $REGISTRY/$IMAGE_NAME:$IMAGE_TAG" // Push the image to Docker Hub
+                }
+            }
+        }
+
+        stage('Trivy Image Scan') {
+            steps {
+                sh "trivy image $REGISTRY/$IMAGE_NAME:$IMAGE_TAG > trivyimage.txt" // Scan the built Docker image using Trivy for vulnerabilities
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+        failure {
+            echo 'Pipeline execution failed!'
+        }
+    }
+}

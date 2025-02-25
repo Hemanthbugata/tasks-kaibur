@@ -2,7 +2,6 @@ pipeline {
     agent any
     tools {
         jdk 'jdk17' // Specify the JDK version (ensure JDK 17 is installed in Jenkins)
-        nodejs 'node16' // Specify the Node.js version (ensure Node.js 16 is installed in Jenkins)
     }
     environment {
         SCANNER_HOME = tool 'sonar-scanner' // SonarQube scanner tool path

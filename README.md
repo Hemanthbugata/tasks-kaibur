@@ -164,7 +164,7 @@ curl -X PUT http://localhost:8080/tasks/123/execute
 
   ![image](https://github.com/user-attachments/assets/020fc626-4aa3-4d0d-ad86-a60dce1533c8)
 
-# **Kaibur Task-2 Docker and Kubernetes Deployment with MongoDB Integration
+# **Kaibur Task-2 Docker and Kubernetes Deployment with MongoDB Integration**
   # Overview
   
  In this task, we will:
